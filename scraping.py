@@ -1,21 +1,20 @@
 
-# Import Splinter and BeautifulSoup
-from splinter import Browser, browser
+# Impnort Splinter and BeautifulSoup
+from splinter import Browser
 from bs4 import BeautifulSoup as soup
 import pandas as pd
 import datetime as dt
-from time import sleep
+import time
 from webdriver_manager.chrome import ChromeDriverManager
 
-def init_browser():
-    # Initiate headless driver for deployment
-    executable_path = {'executable_path': ChromeDriverManager().install()}
-    browser = Browser('chrome', **executable_path, headless=False)
     
 def scrape_all():  
     
+    executable_path = {'executable_path': ChromeDriverManager().install()}
+    browser = Browser('chrome', **executable_path, headless=True)
+    
     # DO I NEED ALL THIS? 
-    browser = init_browser()
+    
     news_title, news_paragraph = mars_news(browser)
     hemisphere_image_urls = hemisphere_data(browser)
   
@@ -98,16 +97,16 @@ def mars_facts():
 
 
     # Assing columns and set index of dataframe
-    df.columns=['Description', 'Mars', 'Earth']
-    df.set_index('Description', inplace=True)
+    # df.columns=['Description', 'Mars', 'Earth']
+    # df.set_index('Description', inplace=True)
 
 # convert DataFrame back into HTML-ready code, add bootstrap
-# df = pd.read_html('https://galaxyfacts-mars.com')[0]
-# df.columns=['description', 'Mars', 'Earth']
-# df.set_index('description', inplace=True)
+    df = pd.read_html('https://galaxyfacts-mars.com')[0]
+    df.columns=['description', 'Mars', 'Earth']
+    df.set_index('description', inplace=True)
     return df.to_html()
 
-browser.quit()
+# browser.quit()
 
 # Mars Hemisphere scrape
 def hemisphere_data(browser):
@@ -123,7 +122,7 @@ def hemisphere_data(browser):
     for i in range(4):
         print(i)
         browser.find_by_tag('h3')[i].click()
-        time.sleep(3)
+        # time.sleep(3)
         
         # parse with soup
         html = browser.html
@@ -135,7 +134,7 @@ def hemisphere_data(browser):
     
         # Image URL
         image_url = hemispheres_url + image_link
-        time.sleep(3)
+        # time.sleep(3)
        
     # Title of Image
         title_image = image_soup.select_one('h2.title').text
